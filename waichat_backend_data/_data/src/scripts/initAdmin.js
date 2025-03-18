@@ -1,5 +1,6 @@
 const { User } = require('../models');
 const logger = require('../utils/logger');
+const bcrypt = require('bcryptjs');
 
 const initAdminUser = async () => {
   try {
@@ -12,10 +13,12 @@ const initAdminUser = async () => {
     
     if (!adminExists) {
       // Crea l'utente admin
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('Password123', salt); // Password più sicura
       await User.create({
         username: 'admin',
         email: 'admin@waichat.local',
-        password: 'admin',
+        password: hashedPassword, // Usa la password hashata
         fullName: 'Administrator',
         role: 'admin'
       });
